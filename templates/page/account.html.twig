@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon compte{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-header">
+                    <h1 class="display-3">Mon compte</h1>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Rendez-vous à venir ({{ nextAppointments|length }})</h2>
+                {% for appointment in nextAppointments %}
+                <div class="card mb-3 border-primary shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Rendez-vous 1</h5>
+                        <p class="card-text">👨‍⚕️Docteur: {{ appointment.doctor.name }}.<br>🕑 Durée: {{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</p>
+                        <p class="card-text"><small class="text-muted">Date: {{ appointment.startsAt|date|format_datetime('full', 'short', locale='fr') }}</small></p>
+                        <a href="#" class="btn btn-secondary">Annuler</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="col-md-6">
+                <h2>Rendez-vous passés</h2>
+                {% for appointment in previousAppointments %}
+                    <div class="card mb-3 opacity-75">
+                        <div class="card-body">
+                            <h5 class="card-title">Rendez-vous 3</h5>
+                            <p class="card-text">👨‍⚕️Docteur: {{ appointment.doctor.name }}.<br>🕑 Durée: {{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</p>
+                            <p class="card-text"><small class="text-muted">Date: {{appointment.startsAt|format_datetime('full', 'short', locale='fr') }}</small></p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
