@@ -20,7 +20,7 @@ class PageController extends AbstractController
     public function doctors(UserRepository $userRepository): Response
     {
         return $this->render('page/doctors.html.twig', [
-            'doctors' => $userRepository->findByRole('ROLE_DOCTOR')
+            'doctors' => $userRepository->findByRole('ROLE_DOCTOR'),
         ]);
     }
 
@@ -28,6 +28,7 @@ class PageController extends AbstractController
     public function account(AppointmentRepository $appointmentRepository): Response
     {
         $user = $this->getUser();
+
         return $this->render('page/account.html.twig', [
             'nextAppointments' => $appointmentRepository->findPatientFutureAppointments($user),
             'previousAppointments' => $appointmentRepository->findPatientPastAppointments($user),

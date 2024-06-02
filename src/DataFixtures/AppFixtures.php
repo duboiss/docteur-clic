@@ -15,17 +15,17 @@ class AppFixtures extends Fixture
         UserFactory::createOne([
             'roles' => ['ROLE_USER'],
             'email' => 'user.user@gmail.com',
-            'password' => 'demo'
+            'password' => 'demo',
         ]);
         UserFactory::createOne([
             'roles' => ['ROLE_DOCTOR'],
             'email' => 'doctor.doctor@gmail.com',
-            'password' => 'demo'
+            'password' => 'demo',
         ]);
         UserFactory::createOne([
             'roles' => ['ROLE_ADMIN'],
             'email' => 'admin.admin@gmail.com',
-            'password' => 'demo'
+            'password' => 'demo',
         ]);
 
         foreach (UserFactory::all() as $user) {

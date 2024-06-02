@@ -55,7 +55,7 @@ final class AppointmentFactory extends ModelFactory
         $startsAt = $startsAt->setTime($randomHour, $randomMinute);
 
         $mutableStartsAt = \DateTime::createFromImmutable($startsAt);
-        $interval = new \DateInterval('PT' . random_int(1, 2) . 'H');
+        $interval = new \DateInterval('PT'.random_int(1, 2).'H');
         $mutableEndsAt = clone $mutableStartsAt;
         $mutableEndsAt->add($interval);
 
@@ -76,7 +76,7 @@ final class AppointmentFactory extends ModelFactory
     {
         return $this
             // ->afterInstantiate(function(Appointment $appointment): void {})
-            ;
+        ;
     }
 
     protected static function getClass(): string
