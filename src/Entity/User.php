@@ -119,6 +119,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return array_unique($roles);
     }
 
+    public function isDoctor(): bool
+    {
+        return in_array('ROLE_DOCTOR', $this->roles, true);
+    }
+
     /**
      * @param list<string> $roles
      */

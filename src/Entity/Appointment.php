@@ -79,4 +79,14 @@ class Appointment
 
         return $this;
     }
+
+    public function isPast(): bool
+    {
+        return $this->endsAt < new \DateTimeImmutable();
+    }
+
+    public function isUpcoming(): bool
+    {
+        return new \DateTimeImmutable() < $this->startsAt;
+    }
 }

@@ -29,9 +29,16 @@ class PageController extends AbstractController
     {
         $user = $this->getUser();
 
-        return $this->render('page/account.html.twig', [
-            'nextAppointments' => $appointmentRepository->findPatientFutureAppointments($user),
-            'previousAppointments' => $appointmentRepository->findPatientPastAppointments($user),
-        ]);
+        $templateData = [
+            'nextPatientAppointments' => $appointmentRepository->findPatientFutureAppointments($user),
+            'previousPatientAppointments' => $appointmentRepository->findPatientPastAppointments($user),
+        ];
+
+        if ($user->isDoctor()) {
+            $templateData['nextDoctorAppointments'] = $appointmentRepository->findDoctorFutureAppointments($user);
+            $templateData['previousDoctorAppointments'] = $appointmentRepository->findDoctorPastAppointments($user);
+        }
+
+        return $this->render('page/account.html.twig', $templateData);
     }
 }

@@ -11,7 +11,7 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        UserFactory::createMany(15);
+        UserFactory::createMany(10);
         UserFactory::createOne([
             'roles' => ['ROLE_USER'],
             'email' => 'user.user@gmail.com',
@@ -33,7 +33,7 @@ class AppFixtures extends Fixture
                 continue;
             }
             AppointmentFactory::createMany(
-                random_int(2, 6),
+                random_int(2, 4),
                 ['patient' => $user, 'doctor' => UserFactory::random(['email' => 'doctor.doctor@gmail.com'])]
             );
         }
