@@ -60,4 +60,21 @@ class AppointmentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findLastMonthAppointments(): array
+    {
+        $now = new \DateTime();
+        $firstDayOfThisMonth = new \DateTime($now->format('Y-m-01'));
+        $firstDayOfLastMonth = (clone $firstDayOfThisMonth)->modify('-1 month');
+        $lastDayOfLastMonth = (clone $firstDayOfThisMonth)->modify('-1 day');
+
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.endsAt >= :firstDayOfLastMonth')
+            ->andWhere('a.endsAt <= :lastDayOfLastMonth')
+            ->setParameter('firstDayOfLastMonth', $firstDayOfLastMonth)
+            ->setParameter('lastDayOfLastMonth', $lastDayOfLastMonth)
+            ->orderBy('a.endsAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

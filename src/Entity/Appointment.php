@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\AppointmentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: AppointmentRepository::class)]
 class Appointment
@@ -15,16 +17,22 @@ class Appointment
 
     #[ORM\ManyToOne(inversedBy: 'patientAppointments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['appointment'])]
+    #[MaxDepth(1)]
     private ?User $patient = null;
 
     #[ORM\ManyToOne(inversedBy: 'doctorAppointments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['appointment'])]
+    #[MaxDepth(1)]
     private ?User $doctor = null;
 
     #[ORM\Column]
+    #[Groups(['appointment'])]
     private ?\DateTimeImmutable $startsAt = null;
 
     #[ORM\Column]
+    #[Groups(['appointment'])]
     private ?\DateTimeImmutable $endsAt = null;
 
     public function getId(): ?int

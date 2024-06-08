@@ -3,11 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Appointment;
+use App\Repository\AppointmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('/appointment')]
 class AppointmentController extends AbstractController
@@ -44,5 +48,14 @@ class AppointmentController extends AbstractController
         }
 
         return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/last_month', name: 'app_appointment_last_month', methods: ['GET'])]
+    public function last_month(AppointmentRepository $appointmentRepository, SerializerInterface $serializer): Response
+    {
+        $appointments = $appointmentRepository->findLastMonthAppointments();
+        $lastMonthAppointments = $serializer->serialize($appointments, 'json', [AbstractNormalizer::GROUPS => ['appointment']]);
+
+        return new JsonResponse($lastMonthAppointments, 200, [], true);
     }
 }
