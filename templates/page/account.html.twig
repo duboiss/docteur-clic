@@ -11,74 +11,130 @@
                 </div>
             </div>
         </div>
+        {% if is_granted('ROLE_ADMIN') %}
+            <h2>Actions admin</h2>
+            <ul>
+                <li><a href="{{ path('app_admin_doctor_index') }}">Gestion des docteurs</a></li>
+            </ul>
+        {% endif %}
         {% if app.user.isDoctor %}
             <div class="row">
-                <div class="col-md-6">
-                    <h2>Docteur - Rendez-vous à venir ({{ nextDoctorAppointments|length }})</h2>
-                    {% for appointment in nextDoctorAppointments %}
-                        <div class="card mb-3 border-primary shadow-sm">
-                            <div class="card-body">
-                                <h5 class="card-title">Rendez-vous 1</h5>
-                                <p class="card-text">🙍‍♂️‍Patient: {{ appointment.patient.name }}.<br>🕑 Durée: {{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</p>
-                                <p class="card-text"><small class="text-muted">Date: {{ appointment.startsAt|date|format_datetime('full', 'short', locale='fr') }}</small></p>
-                                <form method="post" action="{{ path('app_appointment_delete', {'id': appointment.id}) }}" onsubmit="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ appointment.id) }}">
-                                    <button class="btn btn-secondary">Annuler</button>
-                                </form>
-                            </div>
-                        </div>
+                <div class="col-lg-6">
+                    <h2>Rendez-vous patient à venir ({{ nextDoctorAppointments|length }})</h2>
+                    {% if nextDoctorAppointments %}
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Durée 🕑</th>
+                                <th scope="col">Patient🙍‍♂️‍</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for appointment in nextDoctorAppointments %}
+                                <tr>
+                                    <th scope="row">{{ appointment.startsAt|format_datetime('full', 'short', locale='fr') }}</th>
+                                    <td>{{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</td>
+                                    <td>{{ appointment.doctor.name }}</td>
+                                    <td>
+                                        <form method="post" action="{{ path('app_appointment_delete', {'id': appointment.id}) }}" onsubmit="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ appointment.id) }}">
+                                            <button class="btn btn-secondary">Annuler</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     {% else %}
-                        Vous n'avez pas encore de rendez-vous à venir.
-                    {% endfor %}
+                        Vous n'avez pas de rendez-vous à venir
+                    {% endif %}
                 </div>
-                <div class="col-md-6">
-                    <h2>Docteur - Rendez-vous passés</h2>
-                    {% for appointment in previousDoctorAppointments %}
-                        <div class="card mb-3 opacity-75">
-                            <div class="card-body">
-                                <h5 class="card-title">Rendez-vous 3</h5>
-                                <p class="card-text">👨‍⚕️Docteur: {{ appointment.patient.name }}.<br>🕑 Durée: {{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</p>
-                                <p class="card-text"><small class="text-muted">Date: {{appointment.startsAt|format_datetime('full', 'short', locale='fr') }}</small></p>
-                            </div>
-                        </div>
+                <div class="col-lg-6">
+                    <h2>Rendez-vous patient passés</h2>
+                    {% if previousDoctorAppointments %}
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Durée 🕑</th>
+                                <th scope="col">Patient🙍‍♂️‍</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for appointment in previousDoctorAppointments %}
+                                <tr>
+                                    <th>{{ appointment.startsAt|format_datetime('full', 'short', locale='fr') }}</th>
+                                    <td>{{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</td>
+                                    <td>{{ appointment.doctor.name }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
                     {% else %}
-                        Vous n'avez pas de rendez-vous passés.
-                    {% endfor %}
+                        Vous n'avez pas eu de rendez-vous
+                    {% endif %}
                 </div>
             </div>
         {% endif %}
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <h2>Rendez-vous à venir ({{ nextPatientAppointments|length }})</h2>
-                {% for appointment in nextPatientAppointments %}
-                <div class="card mb-3 border-primary shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">Rendez-vous 1</h5>
-                        <p class="card-text">👨‍⚕️Docteur: {{ appointment.doctor.name }}.<br>🕑 Durée: {{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</p>
-                        <p class="card-text"><small class="text-muted">Date: {{ appointment.startsAt|date|format_datetime('full', 'short', locale='fr') }}</small></p>
-                        <form method="post" action="{{ path('app_appointment_delete', {'id': appointment.id}) }}" onsubmit="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?');">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ appointment.id) }}">
-                            <button class="btn btn-secondary">Annuler</button>
-                        </form>
-                    </div>
-                </div>
+                {% if nextPatientAppointments %}
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Durée 🕑</th>
+                                <th scope="col">Docteur👨‍⚕️</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in nextPatientAppointments %}
+                                <tr>
+                                    <th scope="row">{{ appointment.startsAt|format_datetime('full', 'short', locale='fr') }}</th>
+                                    <td>{{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</td>
+                                    <td>{{ appointment.doctor.name }}</td>
+                                    <td>
+                                        <form method="post" action="{{ path('app_appointment_delete', {'id': appointment.id}) }}" onsubmit="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ appointment.id) }}">
+                                            <button class="btn btn-secondary">Annuler</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% else %}
-                    Vous n'avez pas encore de rendez-vous à venir.
-                {% endfor %}
+                    Vous n'avez pas de rendez-vous à venir
+                {% endif %}
             </div>
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <h2>Rendez-vous passés</h2>
-                {% for appointment in previousPatientAppointments %}
-                    <div class="card mb-3 opacity-75">
-                        <div class="card-body">
-                            <h5 class="card-title">Rendez-vous 3</h5>
-                            <p class="card-text">👨‍⚕️Docteur: {{ appointment.doctor.name }}.<br>🕑 Durée: {{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</p>
-                            <p class="card-text"><small class="text-muted">Date: {{appointment.startsAt|format_datetime('full', 'short', locale='fr') }}</small></p>
-                        </div>
-                    </div>
+                {% if previousPatientAppointments %}
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th scope="col">Date</th>
+                                <th scope="col">Durée 🕑</th>
+                                <th scope="col">Docteur👨‍⚕️</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in previousPatientAppointments %}
+                                <tr>
+                                    <th>{{ appointment.startsAt|format_datetime('full', 'short', locale='fr') }}</th>
+                                    <td>{{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</td>
+                                    <td>{{ appointment.doctor.name }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 {% else %}
-                    Vous n'avez pas de rendez-vous passés.
-                {% endfor %}
+                    Vous n'avez pas eu de rendez-vous
+                {% endif %}
             </div>
         </div>
     </div>

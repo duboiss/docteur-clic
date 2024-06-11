@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des docteurs{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-header">
+                    <h1 class="display-3">Gestion des docteurs</h1>
+                </div>
+                <a href="{{ path('app_admin_doctor_new') }}" class="btn btn-primary mb-3">Ajouter un docteur</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Email</th>
+                        <th>Nom d'utilisateur</th>
+                        <th>Prénom</th>
+                        <th>Nom</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.firstname }}</td>
+                            <td>{{ user.lastname }}</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a class="btn btn-secondary btn-sm me-2" href="{{ path('app_admin_doctor_show', {'id': user.id}) }}">Voir</a>
+                                    <a class="btn btn-primary btn-sm me-2" href="{{ path('app_admin_doctor_edit', {'id': user.id}) }}">Editer</a>
+                                    {{ include('doctor/_delete_form.html.twig') }}
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="9">Aucun docteur trouvé</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
