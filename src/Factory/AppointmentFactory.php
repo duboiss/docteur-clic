@@ -47,15 +47,15 @@ final class AppointmentFactory extends ModelFactory
         $startDate = new \DateTime('2024-01-01 07:00:00');
         $endDate = new \DateTime('2024-12-31 18:00:00');
 
-        $randomDate = self::faker()->dateTimeBetween($startDate, $endDate);
-        $randomHour = random_int(7, 16);
-        $randomMinute = (int) floor($randomDate->format('i') / 10) * 10;
+        do {
+            $randomDate = self::faker()->dateTimeBetween($startDate, $endDate);
+        } while (in_array($randomDate->format('N'), [6, 7], true)); // 6: Saturday, 7: Sunday
 
         $startsAt = \DateTimeImmutable::createFromMutable($randomDate);
-        $startsAt = $startsAt->setTime($randomHour, $randomMinute);
+        $startsAt = $startsAt->setTime(random_int(7, 18), 0);
 
         $mutableStartsAt = \DateTime::createFromImmutable($startsAt);
-        $interval = new \DateInterval('PT'.random_int(1, 2).'H');
+        $interval = new \DateInterval('PT1H');
         $mutableEndsAt = clone $mutableStartsAt;
         $mutableEndsAt->add($interval);
 

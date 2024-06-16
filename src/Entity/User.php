@@ -64,6 +64,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'doctor', orphanRemoval: true)]
     private Collection $doctorAppointments;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $doctorDescription = null;
+
     public function __construct()
     {
         $this->patientAppointments = new ArrayCollection();
@@ -259,6 +262,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $appointment->setDoctor(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDoctorDescription(): ?string
+    {
+        return $this->doctorDescription;
+    }
+
+    public function setDoctorDescription(?string $doctorDescription): static
+    {
+        $this->doctorDescription = $doctorDescription;
 
         return $this;
     }

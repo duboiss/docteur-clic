@@ -18,8 +18,8 @@
                     <img src="https://placehold.co/300x150" class="card-img-top" alt="...">
                     <div class="card-body">
                         <h3 class="card-title">{{ doctor.name }}</h3>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis, cumque cupiditate doloribus facere facilis laboriosam minus molestias quasi voluptatibus! Atque ex fugit inventore ipsa maiores nihil nulla quae quasi quia..</p>
-                        <a href="#" class="btn btn-primary">Prendre rendez-vous</a>
+                        <p class="card-text">{{ doctor.doctorDescription }}</p>
+                        <a href="{{ path('app_appointment_index', {id: doctor.id}) }}" class="btn btn-primary">Prendre rendez-vous</a>
                     </div>
                 </div>
             </div>

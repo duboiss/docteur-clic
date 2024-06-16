@@ -53,6 +53,7 @@ final class UserFactory extends ModelFactory
             'firstname' => self::faker()->firstName(),
             'lastname' => self::faker()->unique()->lastName(),
             'socialSecurityNumber' => self::faker()->unique()->numberBetween(1000000000000, 9999999999999),
+            'doctorDescription' => self::faker()->text(150),
         ];
     }
 
