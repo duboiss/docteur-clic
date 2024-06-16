@@ -60,28 +60,19 @@ class AppointmentController extends AbstractController
             $user = $this->getUser();
 
             if ($appointment->getDoctor() !== $user && $appointment->getPatient() !== $user) {
-                $this->addFlash(
-                    'danger',
-                    'Vous ne pouvez pas annuler ce rendez-vous !'
-                );
+                $this->addFlash('danger', 'Vous ne pouvez pas annuler ce rendez-vous !');
 
                 return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
             }
 
             if ($appointment->isPast()) {
-                $this->addFlash(
-                    'danger',
-                    "Impossible d'annuler ce rendez-vous, il est déjà passé"
-                );
+                $this->addFlash('danger', "Impossible d'annuler ce rendez-vous, il est déjà passé");
 
                 return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
             }
             $entityManager->remove($appointment);
             $entityManager->flush();
-            $this->addFlash(
-                'info',
-                'Rendez-vous annulé'
-            );
+            $this->addFlash('info', 'Rendez-vous annulé');
         }
 
         return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);

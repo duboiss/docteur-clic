@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -23,9 +24,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+    #[Assert\NotBlank(message: 'L\'email ne doit pas être vide')]
+    #[Assert\Email(
+        message: 'Votre email {{ value }} n\'est pas un email valide',
+    )]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: 'Le nom d\'utilisateur ne doit pas être vide')]
+    #[Assert\Length(
+        min: 3,
+        max: 15,
+        minMessage: 'Votre nom d\'utilisateur doit faire au minimum {{ limit }} caractères',
+        maxMessage: 'Votre nom d\'utilisateur doit faire au maximum {{ limit }} caractères',
+    )]
     private ?string $username = null;
 
     /**
@@ -42,14 +54,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     #[Groups(['appointment'])]
+    #[Assert\NotBlank(message: 'Le prénom ne doit pas être vide')]
+    #[Assert\Length(
+        min: 3,
+        max: 15,
+        minMessage: 'Votre prénom doit faire au minimum {{ limit }} caractères',
+        maxMessage: 'Votre prénom doit faire au maximum {{ limit }} caractères',
+    )]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['appointment'])]
+    #[Assert\NotBlank(message: 'Le nom ne doit pas être vide')]
+    #[Assert\Length(
+        min: 3,
+        max: 15,
+        minMessage: 'Votre nom doit faire au minimum {{ limit }} caractères',
+        maxMessage: 'Votre nom doit faire au maximum {{ limit }} caractères',
+    )]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['appointment'])]
+    #[Assert\NotBlank(message: 'Le numéro de sécurité sociale ne doit pas être vide')]
+    #[Assert\Regex(pattern: '/^\d{13}$/', message: 'Le numéro de sécurité sociale doit contenir exactement 13 chiffres')]
     private ?string $socialSecurityNumber = null;
 
     /**

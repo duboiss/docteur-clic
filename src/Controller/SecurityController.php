@@ -51,6 +51,8 @@ class SecurityController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Inscription réussie !');
+
             return $security->login($user, 'form_login', 'main');
         }
 

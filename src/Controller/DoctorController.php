@@ -37,10 +37,7 @@ class DoctorController extends AbstractController
             $user->setRoles(['ROLE_DOCTOR']);
             $entityManager->persist($user);
             $entityManager->flush();
-            $this->addFlash(
-                'success',
-                'Docteur créé !'
-            );
+            $this->addFlash('success', 'Docteur créé !');
 
             return $this->redirectToRoute('app_admin_doctor_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -71,10 +68,7 @@ class DoctorController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $user->setPassword($userPasswordHasher->hashPassword($user, $form->get('plainPassword')->getData()));
             $entityManager->flush();
-            $this->addFlash(
-                'info',
-                'Docteur mis à jour !'
-            );
+            $this->addFlash('info', 'Docteur mis à jour !');
 
             return $this->redirectToRoute('app_admin_doctor_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -96,10 +90,7 @@ class DoctorController extends AbstractController
             $entityManager->remove($user);
             $entityManager->flush();
 
-            $this->addFlash(
-                'success',
-                'Docteur supprimé !'
-            );
+            $this->addFlash('success', 'Docteur supprimé !');
         }
 
         return $this->redirectToRoute('app_admin_doctor_index', [], Response::HTTP_SEE_OTHER);
