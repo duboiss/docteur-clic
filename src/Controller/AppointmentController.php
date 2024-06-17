@@ -8,6 +8,7 @@ use App\Form\AppointmentType;
 use App\Repository\AppointmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class AppointmentController extends AbstractController
 {
     #[Route('/{id}', name: 'app_appointment_index', methods: ['GET', 'POST'])]
-    public function create(User $doctor, Request $request, EntityManagerInterface $entityManager): Response
+    public function create(User $doctor, Request $request, EntityManagerInterface $entityManager, AppointmentRepository $appointmentRepository): Response
     {
         if (!$doctor->isDoctor()) {
             $this->addFlash('danger', 'Vous ne pouvez prendre rendez-vous qu\'avec un docteur !');
@@ -34,6 +35,15 @@ class AppointmentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($appointmentRepository->findBy(['doctor' => $doctor->getId(), 'startsAt' => $appointment->getStartsAt()])) {
+                $form->addError(new FormError('Ce docteur est déjà pris sur ce créneau !'));
+
+                return $this->render('appointment/create.html.twig', [
+                    'doctor' => $doctor,
+                    'form' => $form,
+                ]);
+            }
+
             $appointment->setDoctor($doctor);
             $appointment->setPatient($this->getUser());
             $mutableEndsAt = \DateTime::createFromImmutable($appointment->getStartsAt());
