@@ -18,6 +18,10 @@
             </ul>
         {% endif %}
         {% if app.user.isDoctor %}
+            <h2>Actions docteur</h2>
+            <ul>
+                <li><a href="{{ path('app_doctor_appointment_index') }}">Création d'un rendez-vous par téléphone</a></li>
+            </ul>
             <div class="row">
                 <div class="col-lg-6">
                     <h2>Rendez-vous patient à venir ({{ nextDoctorAppointments|length }})</h2>
@@ -36,7 +40,7 @@
                                 <tr>
                                     <th scope="row">{{ appointment.startsAt|format_datetime('full', 'short', locale='fr') }}</th>
                                     <td>{{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</td>
-                                    <td>{{ appointment.doctor.name }}</td>
+                                    <td>{{ appointment.patient.name }}</td>
                                     <td>
                                         <form method="post" action="{{ path('app_appointment_delete', {'id': appointment.id}) }}" onsubmit="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?');">
                                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ appointment.id) }}">
@@ -67,7 +71,7 @@
                                 <tr>
                                     <th>{{ appointment.startsAt|format_datetime('full', 'short', locale='fr') }}</th>
                                     <td>{{ appointment.endsAt.diff(appointment.startsAt)|date("%h") }}h</td>
-                                    <td>{{ appointment.doctor.name }}</td>
+                                    <td>{{ appointment.patient.name }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
