@@ -15,6 +15,7 @@
             <h2>Actions admin</h2>
             <ul>
                 <li><a href="{{ path('app_admin_doctor_index') }}">Gestion des docteurs</a></li>
+                <li><a href="{{ path('app_admin_appointment_index') }}">Création de rendez-vous entre un docteur et son patient</a></li>
             </ul>
         {% endif %}
         {% if app.user.isDoctor %}

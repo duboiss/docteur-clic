@@ -8,6 +8,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 #[ORM\Entity(repositoryClass: AppointmentRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Appointment
 {
     #[ORM\Id]
@@ -86,6 +87,17 @@ class Appointment
         $this->endsAt = $endsAt;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateEndsAt(): void
+    {
+        if (null === $this->endsAt && null !== $this->startsAt) {
+            $mutableEndsAt = \DateTime::createFromImmutable($this->startsAt);
+            $mutableEndsAt->modify('+1 hour');
+            $this->endsAt = \DateTimeImmutable::createFromMutable($mutableEndsAt);
+        }
     }
 
     public function isPast(): bool

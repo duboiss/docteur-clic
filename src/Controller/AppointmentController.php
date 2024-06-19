@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Appointment;
 use App\Entity\User;
+use App\Form\AppointmentAdminType;
 use App\Form\AppointmentDoctorType;
 use App\Form\AppointmentType;
 use App\Repository\AppointmentRepository;
@@ -26,25 +27,21 @@ class AppointmentController extends AbstractController
     #[Route('/doctor', name: 'app_doctor_appointment_index', methods: ['GET', 'POST'])]
     public function doctor_create(Request $request, EntityManagerInterface $entityManager, AppointmentRepository $appointmentRepository): Response
     {
-        $user = $this->getUser();
         $appointment = new Appointment();
         $form = $this->createForm(AppointmentDoctorType::class, $appointment);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($appointmentRepository->findBy(['doctor' => $user->getId(), 'startsAt' => $appointment->getStartsAt()])) {
+            $user = $this->getUser();
+            if ($appointmentRepository->findBy(['doctor' => $user, 'startsAt' => $appointment->getStartsAt()])) {
                 $form->addError(new FormError('Vous avez déjà un patient sur ce créneau !'));
 
                 return $this->render('appointment/doctor_create.html.twig', [
-                    'doctor' => $user,
                     'form' => $form,
                 ]);
             }
 
             $appointment->setDoctor($user);
-            $mutableEndsAt = \DateTime::createFromImmutable($appointment->getStartsAt());
-            $mutableEndsAt->modify('+1 hour');
-            $appointment->setEndsAt(\DateTimeImmutable::createFromMutable($mutableEndsAt));
             $entityManager->persist($appointment);
             $entityManager->flush();
 
@@ -54,7 +51,36 @@ class AppointmentController extends AbstractController
         }
 
         return $this->render('appointment/doctor_create.html.twig', [
-            'doctor' => $user,
+            'form' => $form,
+        ]);
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/admin', name: 'app_admin_appointment_index', methods: ['GET', 'POST'])]
+    public function admin_create(Request $request, EntityManagerInterface $entityManager, AppointmentRepository $appointmentRepository): Response
+    {
+        $appointment = new Appointment();
+        $form = $this->createForm(AppointmentAdminType::class, $appointment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($appointmentRepository->findBy(['doctor' => $appointment->getDoctor(), 'startsAt' => $appointment->getStartsAt()])) {
+                $form->addError(new FormError('Le docteur a déjà un patient sur ce créneau !'));
+
+                return $this->render('appointment/admin_create.html.twig', [
+                    'form' => $form,
+                ]);
+            }
+
+            $entityManager->persist($appointment);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Rendez-vous enregistré !');
+
+            return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('appointment/admin_create.html.twig', [
             'form' => $form,
         ]);
     }
@@ -84,9 +110,6 @@ class AppointmentController extends AbstractController
 
             $appointment->setDoctor($doctor);
             $appointment->setPatient($this->getUser());
-            $mutableEndsAt = \DateTime::createFromImmutable($appointment->getStartsAt());
-            $mutableEndsAt->modify('+1 hour');
-            $appointment->setEndsAt(\DateTimeImmutable::createFromMutable($mutableEndsAt));
             $entityManager->persist($appointment);
             $entityManager->flush();
 

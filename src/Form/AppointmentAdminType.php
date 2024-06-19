@@ -12,7 +12,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class AppointmentDoctorType extends AbstractType
+class AppointmentAdminType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -24,6 +24,16 @@ class AppointmentDoctorType extends AbstractType
                     return $er->createQueryBuilder('u')
                         ->andWhere('u.roles LIKE :role')
                         ->setParameter('role', '%"ROLE_USER"%');
+                },
+                'choice_label' => 'name',
+            ])
+            ->add('doctor', EntityType::class, [
+                'label' => 'Docteur',
+                'class' => User::class,
+                'query_builder' => function (EntityRepository $er): QueryBuilder {
+                    return $er->createQueryBuilder('u')
+                        ->andWhere('u.roles LIKE :role')
+                        ->setParameter('role', '%"ROLE_DOCTOR"%');
                 },
                 'choice_label' => 'name',
             ])

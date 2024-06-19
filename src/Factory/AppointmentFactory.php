@@ -54,18 +54,10 @@ final class AppointmentFactory extends ModelFactory
         $startsAt = \DateTimeImmutable::createFromMutable($randomDate);
         $startsAt = $startsAt->setTime(random_int(7, 18), 0);
 
-        $mutableStartsAt = \DateTime::createFromImmutable($startsAt);
-        $interval = new \DateInterval('PT1H');
-        $mutableEndsAt = clone $mutableStartsAt;
-        $mutableEndsAt->add($interval);
-
-        $endsAt = \DateTimeImmutable::createFromMutable($mutableEndsAt);
-
         return [
             'patient' => UserFactory::random(),
             'doctor' => UserFactory::random(['email' => 'doctor.doctor@gmail.com']),
             'startsAt' => $startsAt,
-            'endsAt' => $endsAt,
         ];
     }
 

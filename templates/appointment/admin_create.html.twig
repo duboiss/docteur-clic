@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Création d'un rendez-vous entre un docteur et un patient{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="page-header">
+                    <h1 class="display-3">Création d'un rendez-vous entre un docteur et un patient</h1>
+                    <p>Le rendez-vous est d'une durée d'une heure.</p>
+                </div>
+            </div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-4" {{ stimulus_controller('appointment') }}>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <button class="btn btn-primary">{{ button_label|default('Sauvegarder') }}</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
