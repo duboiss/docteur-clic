@@ -12,6 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class RegistrationFormType extends AbstractType
 {
@@ -38,7 +39,17 @@ class RegistrationFormType extends AbstractType
             ->add('firstname', TextType::class)
             ->add('lastname', TextType::class)
             ->add('username', TextType::class)
-            ->add('socialSecurityNumber', NumberType::class)
+            ->add('socialSecurityNumber', NumberType::class, [
+                'label' => 'Numéro de sécurité social',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Merci de saisir un numéro de sécurité social',
+                    ]),
+                    new Regex([
+                        'pattern' => '/^\d{13}$/',
+                        'message' => 'Le numéro de sécurité social doit contenir 13 chiffres.',
+                    ]),
+                ]])
         ;
     }
 

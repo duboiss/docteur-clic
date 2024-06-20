@@ -41,6 +41,15 @@ class AppointmentController extends AbstractController
                 ]);
             }
 
+            if ($alreadyExistingAppointment = $appointmentRepository->findOneBy(['patient' => $appointment->getPatient(), 'startsAt' => $appointment->getStartsAt()])) {
+                $form->addError(new FormError(sprintf(
+                    'Le patient a déjà un rendez-vous avec le docteur %s sur ce créneau',
+                    $alreadyExistingAppointment->getDoctor()->getName()
+                )));
+
+                return $this->render('appointment/doctor_create.html.twig', ['form' => $form]);
+            }
+
             $appointment->setDoctor($user);
             $entityManager->persist($appointment);
             $entityManager->flush();
@@ -67,9 +76,16 @@ class AppointmentController extends AbstractController
             if ($appointmentRepository->findBy(['doctor' => $appointment->getDoctor(), 'startsAt' => $appointment->getStartsAt()])) {
                 $form->addError(new FormError('Le docteur a déjà un patient sur ce créneau !'));
 
-                return $this->render('appointment/admin_create.html.twig', [
-                    'form' => $form,
-                ]);
+                return $this->render('appointment/admin_create.html.twig', ['form' => $form]);
+            }
+
+            if ($alreadyExistingAppointment = $appointmentRepository->findOneBy(['patient' => $appointment->getPatient(), 'startsAt' => $appointment->getStartsAt()])) {
+                $form->addError(new FormError(sprintf(
+                    'Le patient a déjà un rendez-vous avec le docteur %s sur ce créneau',
+                    $alreadyExistingAppointment->getDoctor()->getName()
+                )));
+
+                return $this->render('appointment/admin_create.html.twig', ['form' => $form]);
             }
 
             $entityManager->persist($appointment);
@@ -99,8 +115,29 @@ class AppointmentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($appointmentRepository->findBy(['doctor' => $doctor->getId(), 'startsAt' => $appointment->getStartsAt()])) {
+            if ($doctor === $this->getUser()) {
+                $form->addError(new FormError('Vous ne pouvez pas prendre rendez-vous avec vous-même !'));
+
+                return $this->render('appointment/create.html.twig', [
+                    'doctor' => $doctor,
+                    'form' => $form,
+                ]);
+            }
+
+            if ($appointmentRepository->findBy(['doctor' => $doctor, 'startsAt' => $appointment->getStartsAt()])) {
                 $form->addError(new FormError('Ce docteur est déjà pris sur ce créneau !'));
+
+                return $this->render('appointment/create.html.twig', [
+                    'doctor' => $doctor,
+                    'form' => $form,
+                ]);
+            }
+
+            if ($alreadyExistingAppointment = $appointmentRepository->findOneBy(['patient' => $this->getUser(), 'startsAt' => $appointment->getStartsAt()])) {
+                $form->addError(new FormError(sprintf(
+                    'Vous avez déjà un rendez-vous avec le docteur %s sur ce créneau',
+                    $alreadyExistingAppointment->getDoctor()->getName()
+                )));
 
                 return $this->render('appointment/create.html.twig', [
                     'doctor' => $doctor,

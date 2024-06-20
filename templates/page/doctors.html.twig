@@ -15,7 +15,7 @@
         {% for doctor in doctors %}
             <div class="col">
                 <div class="card h-100">
-                    <img src="https://placehold.co/300x150" class="card-img-top" alt="...">
+                    <img src="{{ asset('doctor_placeholder.png') }}" class="card-img-top" alt="Doctor placeholder" width="300" height="150">
                     <div class="card-body">
                         <h3 class="card-title">{{ doctor.name }}</h3>
                         <p class="card-text">{{ doctor.doctorDescription }}</p>

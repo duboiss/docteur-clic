@@ -76,8 +76,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['appointment'])]
-    #[Assert\NotBlank(message: 'Le numéro de sécurité sociale ne doit pas être vide')]
-    #[Assert\Regex(pattern: '/^\d{13}$/', message: 'Le numéro de sécurité sociale doit contenir exactement 13 chiffres')]
     private ?string $socialSecurityNumber = null;
 
     /**
