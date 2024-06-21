@@ -5,11 +5,14 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
-class DoctorType extends AbstractType
+class UserType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -26,6 +29,17 @@ class DoctorType extends AbstractType
             ->add('lastname', TextType::class, [
                 'label' => 'Nom',
             ])
+            ->add('socialSecurityNumber', NumberType::class, [
+                'label' => 'Numéro de sécurité social',
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Merci de saisir un numéro de sécurité social',
+                    ]),
+                    new Regex([
+                        'pattern' => '/^\d{13}$/',
+                        'message' => 'Le numéro de sécurité social doit contenir 13 chiffres.',
+                    ]),
+                ]])
         ;
     }
 
