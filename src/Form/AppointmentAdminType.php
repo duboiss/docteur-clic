@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Appointment;
 use App\Entity\User;
+use App\Validator\TimeConstraints;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -42,6 +43,9 @@ class AppointmentAdminType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => false, // Disable native html picker
                 'attr' => ['class' => 'js-datetime-picker'],
+                'constraints' => [
+                    new TimeConstraints(),
+                ],
             ])
         ;
     }

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Appointment;
+use App\Validator\TimeConstraints;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,6 +19,9 @@ class AppointmentType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => false, // Disable native html picker
                 'attr' => ['class' => 'js-datetime-picker'],
+                'constraints' => [
+                    new TimeConstraints(),
+                ],
             ])
         ;
     }
