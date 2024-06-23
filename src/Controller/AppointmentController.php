@@ -24,6 +24,15 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[IsGranted('ROLE_USER')]
 class AppointmentController extends AbstractController
 {
+    #[Route('/last_month', name: 'app_appointment_last_month', methods: ['GET'])]
+    public function last_month(AppointmentRepository $appointmentRepository, SerializerInterface $serializer): Response
+    {
+        $appointments = $appointmentRepository->findLastMonthAppointments();
+        $lastMonthAppointments = $serializer->serialize($appointments, 'json', [AbstractNormalizer::GROUPS => ['appointment']]);
+
+        return new JsonResponse($lastMonthAppointments, 200, [], true);
+    }
+
     #[IsGranted('ROLE_DOCTOR')]
     #[Route('/doctor', name: 'app_doctor_appointment_index', methods: ['GET', 'POST'])]
     public function doctor_create(Request $request, EntityManagerInterface $entityManager, AppointmentRepository $appointmentRepository): Response
@@ -194,14 +203,5 @@ class AppointmentController extends AbstractController
         }
 
         return $this->redirectToRoute('app_account', [], Response::HTTP_SEE_OTHER);
-    }
-
-    #[Route('/last_month', name: 'app_appointment_last_month', methods: ['GET'])]
-    public function last_month(AppointmentRepository $appointmentRepository, SerializerInterface $serializer): Response
-    {
-        $appointments = $appointmentRepository->findLastMonthAppointments();
-        $lastMonthAppointments = $serializer->serialize($appointments, 'json', [AbstractNormalizer::GROUPS => ['appointment']]);
-
-        return new JsonResponse($lastMonthAppointments, 200, [], true);
     }
 }

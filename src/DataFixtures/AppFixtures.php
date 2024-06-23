@@ -33,7 +33,7 @@ class AppFixtures extends Fixture
                 continue;
             }
             AppointmentFactory::createMany(
-                random_int(2, 4),
+                random_int(3, 4),
                 ['patient' => $user, 'doctor' => UserFactory::random(['email' => 'doctor.doctor@gmail.com'])]
             );
         }
