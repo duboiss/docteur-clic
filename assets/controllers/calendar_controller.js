@@ -14,7 +14,7 @@ export default class extends Controller {
     initializeCalendar() {
         const calendarEl = document.getElementById('calendar');
 
-        const eventsTest = JSON.parse(this.eventsValue).map(event => ({
+        const events = JSON.parse(this.eventsValue).map(event => ({
             ...event,
             start: new Date(event.start),
             end: new Date(event.end)
@@ -24,7 +24,7 @@ export default class extends Controller {
             locale: frLocale,
             plugins: [dayGridPlugin],
             initialView: 'dayGridMonth',
-            events: eventsTest,
+            events: events,
         });
 
         calendar.render();
