@@ -8,6 +8,7 @@ use App\Form\AppointmentAdminType;
 use App\Form\AppointmentDoctorType;
 use App\Form\AppointmentType;
 use App\Repository\AppointmentRepository;
+use App\Service\AppointmentService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormError;
@@ -101,14 +102,19 @@ class AppointmentController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws \JsonException
+     */
     #[Route('/{id}', name: 'app_appointment_index', methods: ['GET', 'POST'])]
-    public function create(User $doctor, Request $request, EntityManagerInterface $entityManager, AppointmentRepository $appointmentRepository): Response
+    public function create(User $doctor, Request $request, EntityManagerInterface $entityManager, AppointmentRepository $appointmentRepository, AppointmentService $appointmentService): Response
     {
         if (!$doctor->isDoctor()) {
             $this->addFlash('danger', 'Vous ne pouvez prendre rendez-vous qu\'avec un docteur !');
 
             return $this->redirectToRoute('app_doctors', [], Response::HTTP_SEE_OTHER);
         }
+
+        $doctorAppointments = $appointmentService->getFullCalendarDoctorAppointments($doctor);
 
         $appointment = new Appointment();
         $form = $this->createForm(AppointmentType::class, $appointment);
@@ -120,6 +126,7 @@ class AppointmentController extends AbstractController
 
                 return $this->render('appointment/create.html.twig', [
                     'doctor' => $doctor,
+                    'doctorAppointments' => $doctorAppointments,
                     'form' => $form,
                 ]);
             }
@@ -129,6 +136,7 @@ class AppointmentController extends AbstractController
 
                 return $this->render('appointment/create.html.twig', [
                     'doctor' => $doctor,
+                    'doctorAppointments' => $doctorAppointments,
                     'form' => $form,
                 ]);
             }
@@ -141,6 +149,7 @@ class AppointmentController extends AbstractController
 
                 return $this->render('appointment/create.html.twig', [
                     'doctor' => $doctor,
+                    'doctorAppointments' => $doctorAppointments,
                     'form' => $form,
                 ]);
             }
@@ -157,6 +166,7 @@ class AppointmentController extends AbstractController
 
         return $this->render('appointment/create.html.twig', [
             'doctor' => $doctor,
+            'doctorAppointments' => json_encode($doctorAppointments, JSON_THROW_ON_ERROR),
             'form' => $form,
         ]);
     }

@@ -8,25 +8,32 @@
             <div class="col-lg-12">
                 <div class="page-header">
                     <h1 class="display-3">Prise de rendez-vous</h1>
-                    <h2>Docteur {{ doctor.name }}</h2>
-                    <p>{{ doctor.doctorDescription }}</p>
-                    <p>Disponibilités</p>
-                    <ul>
-                        <li>Lundi : 07-19h</li>
-                        <li>Mardi : 07-19h</li>
-                        <li>Mercredi : 07-19h</li>
-                        <li>Jeudi : 07-19h</li>
-                        <li>Vendredi : 07-19h</li>
-                    </ul>
-                    <p>Le rendez-vous est d'une durée d'une heure. Tout rendez-vous non honoré vous sera tout de même facturé.</p>
                 </div>
             </div>
         </div>
-        <div class="row row-cols-1 row-cols-md-3 g-4 mb-4" {{ stimulus_controller('appointment') }}>
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <button class="btn btn-primary">{{ button_label|default('Sauvegarder') }}</button>
-            {{ form_end(form) }}
+        <div class="row">
+            <div class="col-lg-5">
+                <h2>Docteur {{ doctor.name }}</h2>
+                <p>{{ doctor.doctorDescription }}</p>
+                <p>Disponibilités</p>
+                <ul>
+                    <li>Lundi : 07-19h</li>
+                    <li>Mardi : 07-19h</li>
+                    <li>Mercredi : 07-19h</li>
+                    <li>Jeudi : 07-19h</li>
+                    <li>Vendredi : 07-19h</li>
+                </ul>
+                <p>Le rendez-vous est d'une durée d'une heure. Tout rendez-vous non honoré vous sera tout de même facturé.</p>
+                <div class="" {{ stimulus_controller('appointment') }}>
+                    {{ form_start(form) }}
+                    {{ form_widget(form) }}
+                    <button class="btn btn-primary">{{ button_label|default('Sauvegarder') }}</button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            <div class="col-lg-7" {{ stimulus_controller('calendar', {'events': doctorAppointments}) }}>
+                <div id="calendar"></div>
+            </div>
         </div>
     </div>
 {% endblock %}
